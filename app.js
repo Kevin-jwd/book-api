@@ -11,5 +11,14 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const router = (userRouter = require("./routes/user.js"));
-app.use("/", userRouter);
+const userRouter = require("./routes/user");
+const bookRouter = require("./routes/book");
+const likeRouter = require("./routes/like");
+const cartRouter = require("./routes/cart");
+const orderRouter = require("./routes/order");
+
+app.use("/users", userRouter);
+app.use("/books", bookRouter);
+app.use("/likes", likeRouter);
+app.use("/carts", cartRouter);
+app.use("/orders", orderRouter);
