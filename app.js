@@ -10,3 +10,6 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+const router = (userRouter = require("./routes/user.js"));
+app.use("/", userRouter);
