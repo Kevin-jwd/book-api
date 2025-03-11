@@ -1,29 +1,18 @@
 // express module
 const express = require("express");
 const router = express.Router();
+
+// mariadb module
 const conn = require("../mariadb");
 
 // http-status-codes module
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
-// 회원가입
-router.post("/register", (req, res) => {
-    const { email, name, password, contact } = req.body;
-    const sql = `INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`;
-    const values = [email, name, password, contact];
+// userController
+const register = require("../controller/UserController");
 
-    conn.query(sql, values, (err, result) => {
-        if (err) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
-                message: ReasonPhrases.BAD_REQUEST,
-            });
-        }
-        return res.status(StatusCodes.CREATED).json({
-            message: ReasonPhrases.CREATED,
-            value: values,
-        });
-    });
-});
+// 회원가입
+router.post("/register", register);
 
 // 로그인
 router.post("/auth/login", (req, res) => {
