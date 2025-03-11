@@ -1,12 +1,27 @@
 // express module
 const express = require("express");
 const router = express.Router();
+const conn = require("../mariadb");
 
 router.use(express.json());
 
 // 회원가입
 router.post("/register", (req, res) => {
-    res.json({});
+    const { name, contact, email, password } = req.body;
+    const sql = `INSERT INTO users (name, contact, email, password) VALUES (?, ?, ?, ?)`;
+    const values = [name, contact, email, password];
+
+    conn.query(sql, values, (err, result) => {
+        if (err) {
+            return res.status(400).json({
+                message: "Bad Request",
+            });
+        }
+        return res.status(201).json({
+            message: "Created",
+            value: values,
+        });
+    });
 });
 
 // 로그인
