@@ -3,22 +3,23 @@ const express = require("express");
 const router = express.Router();
 const conn = require("../mariadb");
 
-router.use(express.json());
+// http-status-codes module
+const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
 // 회원가입
 router.post("/register", (req, res) => {
-    const { name, contact, email, password } = req.body;
-    const sql = `INSERT INTO users (name, contact, email, password) VALUES (?, ?, ?, ?)`;
-    const values = [name, contact, email, password];
+    const { email, name, password, contact } = req.body;
+    const sql = `INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`;
+    const values = [email, name, password, contact];
 
     conn.query(sql, values, (err, result) => {
         if (err) {
-            return res.status(400).json({
-                message: "Bad Request",
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: ReasonPhrases.BAD_REQUEST,
             });
         }
-        return res.status(201).json({
-            message: "Created",
+        return res.status(StatusCodes.CREATED).json({
+            message: ReasonPhrases.CREATED,
             value: values,
         });
     });
@@ -33,8 +34,8 @@ router.post("/auth/login", (req, res) => {
 router
     .route("/auth/password-reset")
     // 초기화 요청
-    .post("/auth/password-reset", (req, res) => res.json({}))
+    .post((req, res) => res.json({}))
     // 초기화
-    .put("/auth/password-reset", (req, res) => res.json({}));
+    .put((req, res) => res.json({}));
 
 module.exports = router;
