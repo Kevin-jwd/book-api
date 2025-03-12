@@ -49,7 +49,12 @@ const login = (req, res) => {
         }
 
         const loginUser = results[0];
-        if (!loginUser || loginUser.password !== password) {
+
+        const hashedPassword = crypto
+            .pbkdf2Sync(password, loginUser.salt, 10000, 64, "sha512")
+            .toString("base64");
+
+        if (!loginUser || loginUser.password !== hashedPassword) {
             return res.status(StatusCodes.UNAUTHORIZED).end();
         }
 
