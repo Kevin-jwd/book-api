@@ -24,8 +24,8 @@ const register = (req, res) => {
         .pbkdf2Sync(password, salt, 10000, 64, "sha512")
         .toString("base64");
 
-    const sql = `INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`;
-    const values = [email, name, password, contact];
+    const sql = `INSERT INTO users (email, name, password, contact, salt) VALUES (?, ?, ?, ?, ?)`;
+    const values = [email, name, hashedPassword, contact, salt];
 
     conn.query(sql, values, (err, results) => {
         if (err) {
