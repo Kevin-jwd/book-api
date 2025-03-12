@@ -8,12 +8,22 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 
+// crypto module
+const crypto = require("crypto");
+
 // http-status-codes module
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
 // 회원가입 모듈
 const register = (req, res) => {
     const { email, name, password, contact } = req.body;
+
+    // password-hashing
+    const salt = crypto.randomBytes(64).toString("base64");
+    const hashedPassword = crypto
+        .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+        .toString("base64");
+
     const sql = `INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`;
     const values = [email, name, password, contact];
 
