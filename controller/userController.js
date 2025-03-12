@@ -98,14 +98,38 @@ const passwordResetRequest = (req, res) => {
         }
         const user = results[0];
         if (user && user.contact === contact) {
-            return res.status(StatusCodes.OK).end();
+            return res.status(StatusCodes.OK).json({
+                results: results,
+            });
         }
         return res.status(StatusCodes.UNAUTHORIZED).end();
     });
 };
 
 // 비밀번호 초기화 모듈
-const passwordResetConfirm = (req, res) => {};
+const passwordResetConfirm = (req, res) => {
+    const { newPassword, email } = req.body;
+    if (!newPassword) {
+        return res.status(StatusCodes.BAD_REQUEST).end();
+    }
+
+    const sql = `UPDATE users SET password = ?, salt = ? WHERE email = ?`;
+    const salt = crypto.randomBytes(64).toString("base64");
+    const newHashedPassword = crypto
+        .pbkdf2Sync(newPassword, salt, 10000, 64, "sha512")
+        .toString("base64");
+    const values = [newHashedPassword, salt, email];
+
+    conn.query(sql, values, (err, results) => {
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
+        }
+        if (results.changedRows === 0) {
+            return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+        return res.status(StatusCodes.OK).end();
+    });
+};
 
 module.exports = {
     register,
