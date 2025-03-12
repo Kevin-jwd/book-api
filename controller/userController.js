@@ -105,7 +105,24 @@ const passwordResetRequest = (req, res) => {
 };
 
 // 비밀번호 초기화 모듈
-const passwordResetConfirm = (req, res) => {};
+const passwordResetConfirm = (req, res) => {
+    const { newPassword, email } = req.body;
+    if (!newPassword) {
+        return res.status(StatusCodes.BAD_REQUEST).end();
+    }
+
+    const sql = `UPDATE users SET password = ? WHERE email = ?`;
+    const values = [newPassword, email];
+    conn.query(sql, values, (err, results) => {
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
+        }
+        if (results.changedRows === 0) {
+            return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+        return res.status(StatusCodes.OK).end();
+    });
+};
 
 module.exports = {
     register,
