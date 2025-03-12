@@ -77,7 +77,27 @@ const login = (req, res) => {
 };
 
 // 비밀번호 초기화 요청 모듈
-const passwordResetRequest = (req, res) => {};
+const passwordResetRequest = (req, res) => {
+    const { email, contact } = req.body;
+
+    if (!email || !contact) {
+        return res.status(StatusCodes.BAD_REQUEST).end();
+    }
+
+    const sql = `SELECT * FROM users WHERE email = ?`;
+    const values = [email];
+
+    conn.query(sql, values, (err, results) => {
+        if (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).end();
+        }
+        const user = results[0];
+        if (user && user.contact === contact) {
+            return res.status(StatusCodes.OK).end();
+        }
+        return res.status(StatusCodes.UNAUTHORIZED).end();
+    });
+};
 
 // 비밀번호 초기화 모듈
 const passwordResetConfirm = (req, res) => {};
