@@ -8,7 +8,7 @@ const {
     login,
     passwordResetRequest,
     passwordResetConfirm,
-} = require("../controller/UserController");
+} = require("../controller/userController");
 
 // 회원가입
 router.post("/register", register);
