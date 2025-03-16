@@ -4,14 +4,14 @@ const conn = require("../mariadb");
 // http-status-codes module
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
-// 전체 도서 및 장르별 도서서 조회 모듈
+// 전체 도서 및 장르별 도서 조회 모듈
 const getBooks = (req, res) => {
     const { genre_id } = req.query;
-    let sql = `SELECT * FROM books`;
+    let sql = `SELECT books.*, genres.name AS genre FROM books LEFT JOIN genres ON books.genre_id = genres.id`;
     const values = [];
 
     if (genre_id) {
-        sql += ` WHERE genre_id = ?`;
+        sql += ` WHERE books.genre_id = ?`;
         values.push(genre_id);
     }
 
