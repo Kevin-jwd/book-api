@@ -4,16 +4,27 @@ const conn = require("../mariadb");
 // http-status-codes module
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
-// 전체 도서 조회 모듈
-const getAllBooks = (req, res) => {
-    const sql = `SELECT * FROM books`;
-    conn.query(sql, (err, results) => {
+// 전체 도서 및 장르별 도서서 조회 모듈
+const getBooks = (req, res) => {
+    const { genre_id } = req.query;
+    let sql = `SELECT * FROM books`;
+    const values = [];
+
+    if (genre_id) {
+        sql += ` WHERE genre_id = ?`;
+        values.push(genre_id);
+    }
+
+    conn.query(sql, values, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
         }
+        if (!results.length) {
+            return res.status(StatusCodes.NOT_FOUND).end();
+        }
         return res.status(StatusCodes.OK).json({
             message: ReasonPhrases.OK,
-            results: results,
+            results,
         });
     });
 };
@@ -38,11 +49,7 @@ const getDetailedBook = (req, res) => {
     });
 };
 
-// 장르별 도서 조회 모듈
-const getBooksByGenres = (req, res) => {};
-
 module.exports = {
-    getAllBooks,
+    getBooks,
     getDetailedBook,
-    getBooksByGenres,
 };
