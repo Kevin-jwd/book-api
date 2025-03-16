@@ -13,6 +13,7 @@ app.listen(PORT, () => {
 
 const userRouter = require("./routes/user");
 const bookRouter = require("./routes/book");
+const genreRouter = require("./routes/genre");
 const likeRouter = require("./routes/like");
 const cartRouter = require("./routes/cart");
 const orderRouter = require("./routes/order");
@@ -20,6 +21,7 @@ const orderRouter = require("./routes/order");
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/books", bookRouter);
+app.use("/genres", genreRouter);
 app.use("/likes", likeRouter);
 app.use("/carts", cartRouter);
 app.use("/orders", orderRouter);
