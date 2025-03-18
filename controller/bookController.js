@@ -6,10 +6,13 @@ const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
 // 전체 도서 및 장르별 도서 조회 모듈
 const getBooks = (req, res) => {
-    const { genre_id, new_book } = req.query;
+    const { genre_id, new_book, limit, currentPage } = req.query;
+
+    let offset = limit * (currentPage - 1);
+
     let sql = `SELECT books.*, genres.name AS genre FROM books LEFT JOIN genres ON books.genre_id = genres.id`;
-    const values = [];
     const conditions = [];
+    let values = [];
 
     if (genre_id) {
         conditions.push(`books.genre_id = ?`);
@@ -22,6 +25,9 @@ const getBooks = (req, res) => {
     if (conditions.length) {
         sql += ` WHERE ` + conditions.join(" AND ");
     }
+
+    sql += ` LIMIT ? OFFSET ?`;
+    values.push(parseInt(limit), offset);
 
     conn.query(sql, values, (err, results) => {
         if (err) {
