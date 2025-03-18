@@ -6,13 +6,21 @@ const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 
 // 전체 도서 및 장르별 도서 조회 모듈
 const getBooks = (req, res) => {
-    const { genre_id } = req.query;
+    const { genre_id, new_book } = req.query;
     let sql = `SELECT books.*, genres.name AS genre FROM books LEFT JOIN genres ON books.genre_id = genres.id`;
     const values = [];
+    const conditions = [];
 
     if (genre_id) {
-        sql += ` WHERE books.genre_id = ?`;
+        conditions.push(`books.genre_id = ?`);
         values.push(genre_id);
+    }
+    if (new_book) {
+        conditions.push(`books.pub_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH)`);
+    }
+
+    if (conditions.length) {
+        sql += ` WHERE ` + conditions.join(" AND ");
     }
 
     conn.query(sql, values, (err, results) => {
