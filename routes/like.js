@@ -5,9 +5,9 @@ const { addLike, removeLike } = require("../controller/likeController");
 router.use(express.json());
 
 // 좋아요 추가
-router.post("/:id", addLike);
+router.post("/:book_id", addLike);
 
 // 좋아요 삭제
-router.delete("/:id", removeLike);
+router.delete("/:book_id", removeLike);
 
 module.exports = router;
