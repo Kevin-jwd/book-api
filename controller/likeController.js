@@ -37,7 +37,7 @@ const removeLike = (req, res) => {
         if (results.affectedRows === 0) {
             return res.status(StatusCodes.NOT_FOUND).end();
         }
-        return res.status(StatusCodesㄹ.OK).json({
+        return res.status(StatusCodes.OK).json({
             message: ReasonPhrases.OK,
             results: results,
         });
