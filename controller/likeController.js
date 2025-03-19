@@ -22,8 +22,26 @@ const addLike = (req, res) => {
     });
 };
 
+// 좋아요 삭제
 const removeLike = (req, res) => {
-    res.json("좋아요 삭제");
+    const { user_id } = req.body;
+    const { book_id } = req.params;
+
+    const value = [user_id, book_id];
+
+    const sql = `DELETE FROM likes WHERE user_id = ? AND book_id = ?`;
+    conn.query(sql, value, (err, results) => {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+        if (results.affectedRows === 0) {
+            return res.status(StatusCodes.NOT_FOUND).end();
+        }
+        return res.status(StatusCodesㄹ.OK).json({
+            message: ReasonPhrases.OK,
+            results: results,
+        });
+    });
 };
 
 module.exports = {
