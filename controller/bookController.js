@@ -10,9 +10,15 @@ const getBooks = (req, res) => {
 
     let offset = limit * (currentPage - 1);
 
-    let sql = `SELECT books.*, genres.name AS genre FROM books LEFT JOIN genres ON books.genre_id = genres.id`;
     const conditions = [];
     let values = [];
+    let sql = `
+    SELECT books.*, 
+           genres.name AS genre, 
+           (SELECT COUNT(*) FROM likes WHERE book_id = books.id) AS likes_count
+        FROM books 
+        LEFT JOIN genres ON books.genre_id = genres.id
+    `;
 
     if (genre_id) {
         conditions.push(`books.genre_id = ?`);
@@ -45,11 +51,18 @@ const getBooks = (req, res) => {
 
 // 개별 도서 상세 정보 조회 모듈
 const getDetailedBook = (req, res) => {
-    const { id } = req.params;
-    const value = [id];
+    const { user_id } = req.body;
+    const { book_id } = req.params;
+    const values = [user_id, book_id, book_id];
 
-    const sql = `SELECT * FROM books WHERE id = ?`;
-    conn.query(sql, value, (err, results) => {
+    const sql = `SELECT *,
+                        (SELECT count(*) FROm likes WHERE book_id = books.id) AS likes,
+                        (SELECT EXISTS (SELECT * FROM likes WHERE user_id = ? AND book_id = ?)) AS liked
+                    FROM books
+                    LEFT JOIN genres
+                    ON books.genre_id = genres.id
+                    WHERE books.id = ?`;
+    conn.query(sql, values, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
         }

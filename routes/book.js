@@ -8,6 +8,6 @@ const { getBooks, getDetailedBook } = require("../controller/bookController");
 router.get("/", getBooks);
 
 // 개별 도서 조회
-router.get("/:id", getDetailedBook);
+router.get("/:book_id", getDetailedBook);
 
 module.exports = router;
