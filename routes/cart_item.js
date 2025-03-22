@@ -8,7 +8,7 @@ router
     .route("/")
     // 장바구니 담기
     .post(addCartItems)
-    // 장바구니 조회
+    // 장바구니 조회 / 선택된 장바구니 목록 조회회
     .get(getCartItems);
 
 // 장바구니 도서 삭제

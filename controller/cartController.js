@@ -24,14 +24,13 @@ const addCartItems = (req, res) => {
 
 // 장바구니 목록 조회
 const getCartItems = (req, res) => {
-    const { user_id } = req.body;
-
-    const value = [user_id];
+    const { user_id, selected } = req.body;
+    const value = [user_id, selected];
 
     const sql = `SELECT cart_items.id, book_id, title, summary, quantity, price 
                     FROM cart_items LEFT JOIN books 
                     ON cart_items.book_id = books.id
-                    WHERE user_id = ?`;
+                    WHERE user_id = ? AND cart_items.id IN (?)`;
     conn.query(sql, value, (err, results) => {
         if (err) {
             return res.status(StatusCodes.BAD_REQUEST).end();
