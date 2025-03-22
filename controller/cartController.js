@@ -43,8 +43,22 @@ const getCartItems = (req, res) => {
     });
 };
 
+// 장바구니 상품 삭제 
 const deleteCartItems = (req, res) => {
-    res.json("장바구니 도서 삭제");
+    const { cart_item_id } = req.params;
+
+    const value = [cart_item_id];
+
+    const sql = `DELETE FROM cart_items WHERE id = ?`;
+    conn.query(sql, value, (err, results) => {
+        if (err) {
+            return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+        return res.status(StatusCodes.OK).json({
+            message: ReasonPhrases.OK,
+            results: results,
+        });
+    });
 };
 
 module.exports = {
