@@ -1,22 +1,14 @@
 // express module
 const express = require("express");
 const router = express.Router();
-
+const { order, getOrders } = require("../controller/orderController.js");
 router.use(express.json());
 
-// 주문하기
-router.post("/", (req, res) => {
-    res.json({});
-});
-
-// 주문 목록 조회
-router.get("/", (req, res) => {
-    res.json({});
-});
-
-// 주문 상세 상품 조회
-router.get("/:id", (req, res) => {
-    res.json({});
-});
+router
+    .route("/")
+    // 주문하기기
+    .post(order)
+    // 주문 내역 조회
+    .get(getOrders);
 
 module.exports = router;
