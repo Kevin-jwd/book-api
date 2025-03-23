@@ -1,7 +1,11 @@
 // express module
 const express = require("express");
 const router = express.Router();
-const { order, getOrders } = require("../controller/orderController.js");
+const {
+    order,
+    getOrders,
+    getOrderDetail,
+} = require("../controller/orderController.js");
 router.use(express.json());
 
 router
@@ -10,5 +14,7 @@ router
     .post(order)
     // 주문 내역 조회
     .get(getOrders);
+
+router.get("/:order_id", getOrderDetail);
 
 module.exports = router;
