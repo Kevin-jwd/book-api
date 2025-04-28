@@ -7,6 +7,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const PORT = process.env.PORT;
 
+// cors module
+const cors = require("cors");
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
@@ -19,6 +22,10 @@ const cartRouter = require("./routes/cart_item");
 const orderRouter = require("./routes/order");
 
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:3000", // 허용할 origin
+    credentials: true, // 쿠키 같은 것도 허용할지 여부
+}));
 app.use("/users", userRouter);
 app.use("/books", bookRouter);
 app.use("/genres", genreRouter);
