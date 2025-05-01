@@ -14,8 +14,14 @@ const order = async (req, res) => {
         database: "BookShop",
         dateStrings: true,
     });
-    const { items, delivery, total_quantity, total_price, user_id, first_book_title } =
-        req.body;
+    const {
+        items,
+        delivery,
+        total_quantity,
+        total_price,
+        user_id,
+        first_book_title,
+    } = req.body;
 
     // deliveries 테이블 삽입
     let sql = `INSERT INTO deliveries (address, receiver, contact) VALUES (?, ?, ?)`;
@@ -58,10 +64,22 @@ const deleteCartItems = async (conn, items) => {
     return results;
 };
 
-
 // 주문 내역 조회
-const getOrders = (req, res) => {
-    res.json("주문 내역 조회");
+const getOrders = async (req, res) => {
+    const conn = await mariadb.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "root",
+        database: "BookShop",
+        dateStrings: true,
+    });
+    let sql = `SELECT orders.id, book_title, total_quantity, total_price, created_at, 
+                address, receiver, contact
+                FROM orders 
+                LEFT JOIN deliveries 
+                ON orders.delivery_id = deliveries.id;`;
+    let [rows, fields] = await conn.query(sql);
+    return res.status(StatusCodes.OK).json(rows);
 };
 
 // 주문 상세 조회
