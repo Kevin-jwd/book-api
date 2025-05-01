@@ -73,8 +73,8 @@ const getOrders = async (req, res) => {
         database: "BookShop",
         dateStrings: true,
     });
-    let sql = `SELECT orders.id, book_title, total_quantity, total_price, created_at, 
-                address, receiver, contact
+    let sql = `SELECT orders.id, created_at, address, receiver, contact,
+                book_title, total_quantity, total_price
                 FROM orders 
                 LEFT JOIN deliveries 
                 ON orders.delivery_id = deliveries.id;`;
