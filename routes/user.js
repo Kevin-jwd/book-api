@@ -14,11 +14,11 @@ const {
 router.post("/register", register);
 
 // 로그인
-router.post("/auth/login", login);
+router.post("/login", login);
 
 // 비밀번호
 router
-    .route("/auth/password-reset")
+    .route("/password-reset")
     // 초기화 요청
     .post(passwordResetRequest)
     // 초기화
